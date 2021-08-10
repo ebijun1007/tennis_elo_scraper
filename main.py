@@ -1,5 +1,3 @@
-import os
-import sys
 from datetime import datetime, timedelta, timezone
 
 from bs4 import BeautifulSoup
