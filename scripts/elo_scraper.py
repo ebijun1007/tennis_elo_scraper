@@ -42,7 +42,6 @@ class EloScraper:
                     continue
             sub_data[1] = sub_data[1].replace('\xa0', ' ')
             if(sub_data[1] in name_list.keys()):
-                print(sub_data[1])
                 sub_data[1] = name_list[sub_data[1]]
             data.append(sub_data)
 
