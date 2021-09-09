@@ -1,5 +1,3 @@
-import json
-
 import requests  # to get image from the web
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -12,13 +10,16 @@ class EloScraper:
     link_wta_yelo = "http://tennisabstract.com/reports/wta_season_yelo_ratings.html"
 
     def get_html_table(self, url):
-        soup = BeautifulSoup(requests.get(url).content, "lxml")
+        user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36'
+        header = {
+            'User-Agent': user_agent
+        }
+        soup = BeautifulSoup(requests.get(url, headers=header).content, "lxml")
         return soup.find("table", {"id": "reportable"})
 
     def convert_html_table_to_csv(self, table):
         # empty list
         data = []
-        name_list = json.load(open('name_list.json', 'r'))
 
         # for getting the header from the HTML table
         list_header = []
@@ -41,8 +42,6 @@ class EloScraper:
                 except:
                     continue
             sub_data[1] = sub_data[1].replace('\xa0', ' ')
-            if(sub_data[1] in name_list.keys()):
-                sub_data[1] = name_list[sub_data[1]]
             data.append(sub_data)
 
         return pd.DataFrame(data=data, columns=list_header)

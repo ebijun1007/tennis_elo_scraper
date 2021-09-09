@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta, timezone
 
-from bs4 import BeautifulSoup
 import pandas as pd
 from scripts.elo_scraper import EloScraper
 
@@ -9,7 +8,6 @@ def main():
     jst = timezone(timedelta(hours=9), 'JST')
     now = datetime.now(jst)
     elo_scraper = EloScraper()
-    # get html table (bs4 soup object)
     atp_elo_table = elo_scraper.get_html_table(elo_scraper.link_atp_elo)
     atp_yelo_table = elo_scraper.get_html_table(elo_scraper.link_atp_yelo)
     wta_elo_table = elo_scraper.get_html_table(elo_scraper.link_wta_elo)
