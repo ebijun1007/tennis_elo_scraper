@@ -1,0 +1,51 @@
+name: Scrape Tennis Rankings
+
+on:
+  schedule:
+    # Run every Monday at 9:00 AM UTC (6:00 PM JST)
+    - cron: '0 9 * * 1'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  scrape-rankings:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Create data directories
+      run: |
+        mkdir -p data
+        mkdir -p latest
+        
+    - name: Scrape tennis rankings
+      run: |
+        python main_rankings.py
+        
+    - name: Configure Git
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+    - name: Commit and push changes
+      run: |
+        git add data/ latest/
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "Update tennis rankings - $(date +'%Y-%m-%d')"
+          git push
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
